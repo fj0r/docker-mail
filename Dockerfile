@@ -10,7 +10,7 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    ca-certificates sudo \
+    ca-certificates sudo curl \
     tzdata locales \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
