@@ -10,9 +10,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-    ca-certificates \
-    tzdata \
-    locales \
+    ca-certificates sudo \
+    tzdata locales \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
         dovecot-pgsql postfix-pgsql \
