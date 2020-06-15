@@ -12,3 +12,10 @@ $ nano /etc/postfix/aliases
 root: USER@DOMAIN.TLD
 postmaster: USER@DOMAIN.TLD
 $ postalias /etc/postfix/aliases
+
+$ sqlite3 /etc/postfix/vmail.sqlite
+
+ CREATE TABLE users (email TEXT PRIMARY KEY, password TEXT, quota INTEGER DEFAULT 0);
+ CREATE TABLE domains (id INTEGER PRIMARY KEY, domain TEXT UNIQUE);
+ CREATE TABLE aliases (id INTEGER PRIMARY KEY, email TEXT UNIQUE, alias TEXT);
+
