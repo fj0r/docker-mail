@@ -15,7 +15,7 @@ RUN set -eux \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
-        dovecot-sqlite3 postfix-sqlite3 \
+        dovecot-sqlite postfix-sqlite \
         opendkim opendkim-tools \
   \
   ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
