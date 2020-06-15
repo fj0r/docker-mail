@@ -1,3 +1,14 @@
-https://www.jianshu.com/p/610d9bf0ae8b
+https://ubuverse.com/setting-up-your-own-mail-server-on-ubuntu/
 
-http://lomu.me/post/SPF-DKIM-DMARC-PTR
+And insert your mail server hostname in /etc/hosts and /etc/mailname.
+
+$ nano /etc/hosts
+YOUR_EXTERNAL_IP  MAIL.DOMAIN.TLD
+
+$ nano /etc/mailname
+MAIL.DOMAIN.TLD
+
+$ nano /etc/postfix/aliases
+root: USER@DOMAIN.TLD
+postmaster: USER@DOMAIN.TLD
+$ postalias /etc/postfix/aliases
