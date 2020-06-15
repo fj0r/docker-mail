@@ -31,5 +31,3 @@ RUN set -eux \
   ; rm -f /tmp/s6overlay.tar.gz \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-ENV DOMAIN=
