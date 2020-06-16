@@ -1,10 +1,16 @@
-#!/usr/bin/with-contenv bash
-echo >&2 "starting watcher"
+set -eux
 
-sleep 1
-cd /etc/openresty
+echo "${EXTERNAL_IP} ${DOMAIN}" >> /etc/hosts
+echo "${DOMAIN}" >> /etc/mailname
 
-exec watchexec -- reload-nginx 2>&1
+sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${DOMAIN}"'/' /etc/postfix/aliases
 
-$ service postfix restart
-$ service dovecot restart
+postalias /etc/postfix/aliases
+
+while true; do
+    inotifywait -re modify /etc
+    service postfix restart
+    service dovecot restart
+done
+
+#exec watchexec -- reload-nginx 2>&1

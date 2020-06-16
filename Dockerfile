@@ -3,15 +3,13 @@ FROM ubuntu:focal
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
 ENV watchexec_version=1.13.1
 
-ARG watchexec_url=https://github.com/watchexec/watchexec/releases/download/${watchexec_version}/watchexec-${watchexec_version}-x86_64-unknown-linux-musl.tar.xz
-
 RUN set -eux \
   ; apt-get update \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     ca-certificates sudo curl \
-    tzdata locales xz-utils \
+    tzdata locales xz-utils inotify-tools \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
@@ -25,9 +23,6 @@ RUN set -eux \
     -e 's/# \(en_US.UTF-8 UTF-8\)/\1/' \
     -e 's/# \(zh_CN.UTF-8 UTF-8\)/\1/' \
   ; locale-gen \
-  \
-  ; curl -sSL ${watchexec_url} \
-      | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
@@ -45,4 +40,5 @@ RUN set -eux \
 
 ENV DOMAIN=
 ENV EXTERNAL_IP=
+ENV MASTER=
 EXPOSE 25 465 587 110 995 143 993
