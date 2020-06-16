@@ -11,7 +11,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     ca-certificates sudo curl \
-    tzdata locales \
+    tzdata locales xz-utils \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
