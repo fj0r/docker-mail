@@ -1,2 +1,7 @@
 build:
-    docker build . -t nnurphy/mail:v1 -f Dockerfile-v1
+    docker build . -t nnurphy/mail:ext -f Dockerfile-ext
+
+test:
+    docker run -it --rm nnurphy/mail:ext
+
+all: build test

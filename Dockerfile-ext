@@ -1,4 +1,1 @@
 From nnurphy/mail
-
-ENV DOMAIN=
-EXPOSE 25 465 587 110 995 143 993

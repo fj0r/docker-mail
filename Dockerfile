@@ -31,7 +31,8 @@ RUN set -eux \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-COPY etc/postfix /etc
+COPY etc/postfix /etc/postfix
+COPY etc/dovecot /etc/dovecot
 
 RUN set -eux \
   ; groupadd --system vmail -g 5000 \
@@ -43,4 +44,5 @@ RUN set -eux \
   ; chmod -R o-rwx /etc/dovecot
 
 ENV DOMAIN=
+ENV EXTERNAL_IP=
 EXPOSE 25 465 587 110 995 143 993
