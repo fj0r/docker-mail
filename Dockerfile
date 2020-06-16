@@ -26,7 +26,7 @@ RUN set -eux \
     -e 's/# \(zh_CN.UTF-8 UTF-8\)/\1/' \
   ; locale-gen \
   \
-  ; wget -q -O- ${watchexec_url} \
+  ; curl -sSL ${watchexec_url} \
       | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
