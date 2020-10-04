@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
-ENV watchexec_version=1.14.0
+ENV watchexec_version=1.14.1
 
 RUN set -eux \
   ; apt-get update \
