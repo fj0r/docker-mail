@@ -8,7 +8,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     ca-certificates sudo curl \
-    tzdata locales xz-utils inotify-tools incron \
+    tzdata locales xz-utils inotify-tools \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
