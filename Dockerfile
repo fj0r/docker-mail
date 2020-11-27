@@ -1,7 +1,6 @@
 FROM ubuntu:focal
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
-ENV watchexec_version=1.14.1
 
 RUN set -eux \
   ; apt-get update \
@@ -9,7 +8,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
     ca-certificates sudo curl \
-    tzdata locales xz-utils inotify-tools \
+    tzdata locales xz-utils inotify-tools incron \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
