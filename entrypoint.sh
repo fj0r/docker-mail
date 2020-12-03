@@ -13,4 +13,3 @@ while true; do
     service dovecot restart
 done
 
-#exec watchexec -- reload-nginx 2>&1
