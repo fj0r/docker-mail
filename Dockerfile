@@ -7,8 +7,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        ca-certificates sudo curl \
-        tzdata locales xz-utils inotify-tools \
+        ca-certificates sudo curl neovim \
+        tzdata locales xz-utils \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
@@ -24,6 +24,22 @@ RUN set -eux \
   ; locale-gen \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+ENV watchexec_version=1.14.1
+ENV s6overlay_version=2.1.0.2
+
+ARG watchexec_url=https://github.com/watchexec/watchexec/releases/download/${watchexec_version}/watchexec-${watchexec_version}-x86_64-unknown-linux-musl.tar.xz
+ARG s6overlay_url=https://github.com/just-containers/s6-overlay/releases/download/v${s6overlay_version}/s6-overlay-amd64.tar.gz
+
+RUN set -eux \
+  ; wget -q -O- ${watchexec_url} \
+      | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
+  \
+  ; curl --fail --silent -L ${s6overlay_url} > /tmp/s6overlay.tar.gz \
+  ; tar xzf /tmp/s6overlay.tar.gz -C / --exclude="./bin" \
+  ; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
+  ; rm -f /tmp/s6overlay.tar.gz
+
 
 COPY etc/postfix /etc/postfix
 COPY etc/dovecot /etc/dovecot
