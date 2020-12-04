@@ -32,10 +32,10 @@ ARG watchexec_url=https://github.com/watchexec/watchexec/releases/download/${wat
 ARG s6overlay_url=https://github.com/just-containers/s6-overlay/releases/download/v${s6overlay_version}/s6-overlay-amd64.tar.gz
 
 RUN set -eux \
-  ; wget -q -O- ${watchexec_url} \
+  ; curl -sSL ${watchexec_url} \
       | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   \
-  ; curl --fail --silent -L ${s6overlay_url} > /tmp/s6overlay.tar.gz \
+  ; curl -sSL ${s6overlay_url} > /tmp/s6overlay.tar.gz \
   ; tar xzf /tmp/s6overlay.tar.gz -C / --exclude="./bin" \
   ; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
   ; rm -f /tmp/s6overlay.tar.gz
