@@ -28,7 +28,7 @@ RUN set -eux \
     | tee  /etc/apt/sources.list.d/pgdg.list \
   ; apt update \
   ; apt install  -y --no-install-recommends \
-        postgresql-13 postgresql-client-13
+        postgresql-13 postgresql-client-13 \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
@@ -47,8 +47,8 @@ RUN set -eux \
   ; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
   ; rm -f /tmp/s6overlay.tar.gz
 
-COPY etc-pg/postfix /etc/postfix
-COPY etc-pg/dovecot /etc/dovecot
+COPY etc/postfix /etc/postfix
+COPY etc/dovecot /etc/dovecot
 
 RUN set -eux \
   ; groupadd --system vmail -g 5000 \
