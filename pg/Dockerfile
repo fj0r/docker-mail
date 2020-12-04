@@ -7,7 +7,7 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        ca-certificates sudo curl wget neovim \
+        gnupg ca-certificates sudo curl wget neovim \
         tzdata locales xz-utils inotify-tools \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
