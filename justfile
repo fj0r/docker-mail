@@ -1,8 +1,11 @@
 build:
     docker build . -t nnurphy/mail:pg -f Dockerfile-pg
 
-local:
-    docker run --rm \
+bdev:
+    docker build . -t nnurphy/mail-dev -f Dockerfile-dev
+
+local : bdev
+    docker run --rm -it \
         --name mail \
         -e DOMAIN=localhost \
         -e EXTERNAL_IP=127.0.0.1 \
@@ -15,7 +18,7 @@ local:
         -p 995:995 \
         -p 143:143 \
         -p 993:993 \
-        nnurphy/mail:pg
+        nnurphy/mail-dev
 
 run:
     docker run -d --restart=always \
@@ -31,4 +34,4 @@ run:
         -p 995:995 \
         -p 143:143 \
         -p 993:993 \
-        nnurphy/mail:pg
+        nnurphy/mail
