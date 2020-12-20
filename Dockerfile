@@ -7,13 +7,14 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        ca-certificates sudo curl neovim \
+        ca-certificates sudo curl git \
         tzdata locales xz-utils \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
         dovecot-sqlite postfix-sqlite \
         opendkim opendkim-tools \
+        python3 pytho3-neovim \
   \
   ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
@@ -22,6 +23,11 @@ RUN set -eux \
     -e 's/# \(en_US.UTF-8 UTF-8\)/\1/' \
     -e 's/# \(zh_CN.UTF-8 UTF-8\)/\1/' \
   ; locale-gen \
+  \
+  ; curl -sSL https://github.com/neovim/neovim/releases/download/${NVIM_VERSION:-nightly}/nvim-linux64.tar.gz \
+      | tar zxf - -C /usr/local --strip-components=1 \
+  ; mkdir -p ~/.config \
+  ; git clone --depth=1 https://github.com/murphil/nvim ~/.config/nvim \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
