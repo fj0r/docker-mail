@@ -4,6 +4,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
 
 ARG github_header="Accept: application/vnd.github.v3+json"
 ARG github_api=https://api.github.com/repos
+ARG nvim_repo=neovim/neovim
 ARG rg_repo=BurntSushi/ripgrep
 
 RUN set -eux \
