@@ -2,6 +2,10 @@ FROM ubuntu:focal
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
 
+ARG github_header="Accept: application/vnd.github.v3+json"
+ARG github_api=https://api.github.com/repos
+ARG rg_repo=BurntSushi/ripgrep
+
 RUN set -eux \
   ; apt-get update \
   ; apt-get upgrade -y \
@@ -14,7 +18,15 @@ RUN set -eux \
         dovecot-core dovecot-imapd dovecot-lmtpd \
         dovecot-sqlite postfix-sqlite \
         opendkim opendkim-tools \
-        python3 pytho3-neovim \
+        python3 python3-pip \
+  \
+  ; curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+  ; apt-get install -y --no-install-recommends nodejs \
+  \
+  ; nvim_version=$(curl -sSL -H "'$github_header'" $github_api/${nvim_repo}/releases | jq -r '.[0].tag_name') \
+  ; nvim_url=https://github.com/${nvim_repo}/releases/download/${nvim_version}/nvim-linux64.tar.gz \
+  ; curl -sSL ${nvim_url} | tar zxf - -C /usr/local --strip-components=1 \
+  ; pip3 --no-cache-dir install neovim neovim-remote \
   \
   ; sed -i 's/^.*\(%sudo.*\)ALL$/\1NOPASSWD:ALL/g' /etc/sudoers \
   ; ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime \
@@ -24,24 +36,35 @@ RUN set -eux \
     -e 's/# \(zh_CN.UTF-8 UTF-8\)/\1/' \
   ; locale-gen \
   \
-  ; curl -sSL https://github.com/neovim/neovim/releases/download/${NVIM_VERSION:-nightly}/nvim-linux64.tar.gz \
-      | tar zxf - -C /usr/local --strip-components=1 \
   ; mkdir -p ~/.config \
-  ; git clone --depth=1 https://github.com/murphil/nvim ~/.config/nvim \
+  ; nvim_home=~/.config/nvim \
+  ; git clone --depth=1 https://github.com/murphil/nvim-coc.git $nvim_home \
+  ; NVIM_SETUP_PLUGINS=1 \
+    nvim -u $nvim_home/init.vim --headless +'PlugInstall' +qa \
+  ; rm -rf $nvim_home/plugged/*/.git \
+  ; for x in $(cat $nvim_home/coc-core-extensions) \
+  ; do nvim -u $nvim_home/init.vim --headless +"CocInstall -sync coc-$x" +qa; done \
+  ; npm cache clean -f \
+  \
+  ; rg_version=$(curl -sSL -H "'$github_header'" $github_api/${rg_repo}/releases | jq -r '.[0].tag_name') \
+  ; rg_url=https://github.com/${rg_repo}/releases/download/${rg_version}/ripgrep-${rg_version}-x86_64-unknown-linux-musl.tar.gz \
+  ; wget -qO- ${rg_url} | tar zxf - -C /usr/local/bin --strip-components=1 ripgrep-${rg_version}-x86_64-unknown-linux-musl/rg \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-ENV watchexec_version=1.14.1
-ENV s6overlay_version=2.1.0.2
-
-ARG watchexec_url=https://github.com/watchexec/watchexec/releases/download/${watchexec_version}/watchexec-${watchexec_version}-x86_64-unknown-linux-musl.tar.xz
-ARG s6overlay_url=https://github.com/just-containers/s6-overlay/releases/download/v${s6overlay_version}/s6-overlay-amd64.tar.gz
+ARG s6overlay_repo=just-containers/s6-overlay
+ARG watchexec_repo=watchexec/watchexec
 
 RUN set -eux \
+  ; watchexec_version=$(curl -sSL -H "'$github_header'" $github_api/${watchexec_repo}/releases | jq -r '.[0].tag_name') \
+  ; watchexec_url=https://github.com/${watchexec_repo}/releases/download/${watchexec_version}/watchexec-${watchexec_version}-x86_64-unknown-linux-musl.tar.xz \
+  ; wget -qO- ${watchexec_url} | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   ; curl -sSL ${watchexec_url} \
       | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   \
-  ; curl -sSL ${s6overlay_url} > /tmp/s6overlay.tar.gz \
+  ; s6overlay_version=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_version}/s6-overlay-amd64.tar.gz \
+  ; curl --fail --silent -L ${s6overlay_url} > /tmp/s6overlay.tar.gz \
   ; tar xzf /tmp/s6overlay.tar.gz -C / --exclude="./bin" \
   ; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
   ; rm -f /tmp/s6overlay.tar.gz
