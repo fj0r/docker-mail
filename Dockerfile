@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM debian:sid-slim
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TIMEZONE=Asia/Shanghai
 
@@ -82,6 +82,10 @@ RUN set -eux \
   ; chmod 770 /var/spool/mail/virtual \
   ; chown -R vmail:dovecot /etc/dovecot \
   ; chmod -R o-rwx /etc/dovecot
+
+COPY services.d /etc/services.d
+COPY entrypoint.sh /
+ENTRYPOINT [ "/init" ]
 
 ENV DOMAIN=
 ENV EXTERNAL_IP=
