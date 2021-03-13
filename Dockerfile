@@ -14,6 +14,7 @@ RUN set -eux \
     apt-get install -y --no-install-recommends \
         ca-certificates sudo curl git \
         tzdata locales xz-utils jq \
+        swaks \
         sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
