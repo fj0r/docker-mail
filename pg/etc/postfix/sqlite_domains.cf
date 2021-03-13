@@ -1,2 +1,0 @@
-dbpath = /etc/postfix/vmail.sqlite
-query = SELECT domain FROM domains WHERE domain = '%s'

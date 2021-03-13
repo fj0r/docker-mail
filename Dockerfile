@@ -86,7 +86,7 @@ RUN set -eux \
 COPY entrypoint.sh /
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-ENV DOMAIN=
+ENV HOST=
 ENV EXTERNAL_IP=
 ENV MASTER=
 EXPOSE 25 465 587 110 995 143 993
