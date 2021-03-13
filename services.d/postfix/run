@@ -1,20 +1,11 @@
 #!/usr/bin/with-contenv sh
 
-if [ ! -z $WEB_SERVERNAME ]; then
-    sed -i 's!\(server_name\).*$!\1 '"$WEB_SERVERNAME"';!' /etc/openresty/conf.d/default.conf
-fi
+echo "${EXTERNAL_IP} ${DOMAIN}" >> /etc/hosts
+echo "${DOMAIN:-localhost}" >> /etc/mailname
 
-if [ ! -z $WEB_ROOT ]; then
-    sed -i 's!\(set $root\).*$!\1 '"\'$WEB_ROOT\'"';!' /etc/openresty/conf.d/default.conf
-fi
+sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${DOMAIN}"'/' /etc/postfix/aliases
+postalias /etc/postfix/aliases
 
-if [ -z $WS_FIXED ]; then
-    export websocat_token=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
-    echo "${websocat_token}" > /.websocat-token
-    echo "websocat url is \`/websocat-${websocat_token}\`"
-    sed -i 's!websocat!'"websocat-$websocat_token"'!' /etc/openresty/conf.d/default.conf
-fi
+echo >&2 "starting postfix"
+exec /usr/sbin/postfix start 2>&1
 
-echo >&2 "starting openresty"
-
-exec /usr/local/openresty/bin/openresty 2>&1

@@ -12,10 +12,8 @@ RUN set -eux \
   ; apt-get upgrade -y \
   ; DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        ca-certificates sudo curl git \
-        tzdata locales xz-utils jq \
-        swaks \
-        sqlite3 \
+        ca-certificates sudo tzdata locales procps \
+        xz-utils jq curl git swaks sqlite3 \
         postfix \
         dovecot-core dovecot-imapd dovecot-lmtpd \
         dovecot-sqlite postfix-sqlite \
@@ -54,7 +52,7 @@ RUN set -eux \
   \
   ; apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-ARG s6overlay_repo=just-containers/s6-overlay
+#ARG s6overlay_repo=just-containers/s6-overlay
 ARG watchexec_repo=watchexec/watchexec
 
 RUN set -eux \
@@ -63,13 +61,13 @@ RUN set -eux \
   ; curl -sSL ${watchexec_url} | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
   ; curl -sSL ${watchexec_url} \
       | tar Jxf - --strip-components=1 -C /usr/local/bin watchexec-${watchexec_version}-x86_64-unknown-linux-musl/watchexec \
-  \
-  ; s6overlay_version=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
-  ; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_version}/s6-overlay-amd64.tar.gz \
-  ; curl --fail --silent -L ${s6overlay_url} > /tmp/s6overlay.tar.gz \
-  ; tar xzf /tmp/s6overlay.tar.gz -C / --exclude="./bin" \
-  ; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
-  ; rm -f /tmp/s6overlay.tar.gz
+  #\
+  #; s6overlay_version=$(curl -sSL -H "'$github_header'" $github_api/${s6overlay_repo}/releases | jq -r '.[0].tag_name') \
+  #; s6overlay_url=https://github.com/${s6overlay_repo}/releases/download/${s6overlay_version}/s6-overlay-amd64.tar.gz \
+  #; curl --fail --silent -L ${s6overlay_url} > /tmp/s6overlay.tar.gz \
+  #; tar xzf /tmp/s6overlay.tar.gz -C / --exclude="./bin" \
+  #; tar xzf /tmp/s6overlay.tar.gz -C /usr ./bin \
+  #; rm -f /tmp/s6overlay.tar.gz
 
 
 COPY etc/postfix /etc/postfix
@@ -84,9 +82,9 @@ RUN set -eux \
   ; chown -R vmail:dovecot /etc/dovecot \
   ; chmod -R o-rwx /etc/dovecot
 
-COPY services.d /etc/services.d
+#COPY services.d /etc/services.d
 COPY entrypoint.sh /
-ENTRYPOINT [ "/init" ]
+ENTRYPOINT [ "/entrypoint.sh" ]
 
 ENV DOMAIN=
 ENV EXTERNAL_IP=
