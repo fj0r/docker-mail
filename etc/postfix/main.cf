@@ -63,10 +63,15 @@ smtpd_data_restrictions =
 # Virtual domains setup
 alias_maps = hash:/etc/postfix/aliases
 alias_database = hash:/etc/postfix/aliases
+
+relay_domains = sqlite:/etc/postfix/sqlite_relay_domains_maps.cf
+relay_recipient_maps = sqlite:/etc/postfix/sqlite_relay_recipient_maps.cf
+
+virtual_alias_maps = sqlite:/etc/postfix/sqlite_virtual_alias_maps.cf
+virtual_mailbox_domains = sqlite:/etc/postfix/sqlite_virtual_domains_maps.cf
+virtual_mailbox_maps = sqlite:/etc/postfix/sqlite_virtual_mailbox_maps.cf
+
 virtual_mailbox_base = /var/spool/mail/virtual
-virtual_mailbox_maps = sqlite:/etc/postfix/sqlite_mailbox.cf
-virtual_alias_maps = sqlite:/etc/postfix/sqlite_alias.cf
-virtual_mailbox_domains = sqlite:/etc/postfix/sqlite_domains.cf
 virtual_uid_maps = static:5000
 virtual_gid_maps = static:5000
 
