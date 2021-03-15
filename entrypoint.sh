@@ -6,7 +6,7 @@ MASTER=${MASTER:-master}
 EXTERNAL_IP=${EXTERNAL_IP:-127.0.0.1}
 MYDOMAIN=$(echo $MYHOST|cut -d'.' -f 2-)
 echo "${EXTERNAL_IP} ${MYHOST}" >> /etc/hosts
-#echo "${MYDOMAIN}" >> /etc/mailname
+echo "${MYDOMAIN}" >> /etc/mailname
 
 sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${DOMAIN}"'/' /etc/postfix/aliases
 sed -i 's/MAIL\.DOMAIN\.TLD/'"${MYHOST}"'/' /etc/postfix/main.cf
