@@ -2,17 +2,18 @@
 set -eux
 
 MYHOST=${HOST:-localhost}
+MASTER=${MASTER:-master}
 EXTERNAL_IP=${EXTERNAL_IP:-127.0.0.1}
 MYDOMAIN=$(echo $MYHOST|cut -d'.' -f 2-)
 echo "${EXTERNAL_IP} ${MYHOST}" >> /etc/hosts
-echo "${MYDOMAIN}" >> /etc/mailname
+#echo "${MYDOMAIN}" >> /etc/mailname
 
 sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${DOMAIN}"'/' /etc/postfix/aliases
 sed -i 's/MAIL\.DOMAIN\.TLD/'"${MYHOST}"'/' /etc/postfix/main.cf
 
 postalias /etc/postfix/aliases
 
-if [ ! -f /etc/vmail.sqlite ]; then 
+if [ ! -f /etc/vmail.sqlite ]; then
     sqlite3 -batch /etc/vmail.sqlite << EOF
     CREATE TABLE alias (
         address varchar(255) NOT NULL,
@@ -21,7 +22,7 @@ if [ ! -f /etc/vmail.sqlite ]; then
         created datetime NOT NULL default '0000-00-00 00:00:00',
         modified datetime NOT NULL default '0000-00-00 00:00:00',
         active tinyint(1) NOT NULL default '1');
-    
+
     CREATE TABLE domain (
         domain varchar(255) NOT NULL,
         description varchar(255) NOT NULL,
@@ -34,7 +35,7 @@ if [ ! -f /etc/vmail.sqlite ]; then
         created datetime NOT NULL default '0000-00-00 00:00:00',
         modified datetime NOT NULL default '0000-00-00 00:00:00',
         active tinyint(1) NOT NULL default '1' );
-    
+
     CREATE TABLE mailbox (
         username varchar(255) NOT NULL,
         password varchar(255) NOT NULL,
@@ -48,13 +49,13 @@ if [ ! -f /etc/vmail.sqlite ]; then
         active tinyint(1) NOT NULL default '1');
 
 	INSERT INTO domain ( domain, description, transport )
-		VALUES ( 'laptop.mattrude.com', 'laptops domain', 'virtual' );
+		VALUES ( '$MYHOST', '$MYHOST domain', 'virtual' );
 
 	INSERT INTO mailbox ( username, password, name, maildir, domain, local_part )
-		VALUES ( 'matt@laptop.mattrude.com', 'password', 'Matt', 'laptop.mattrude.com/matt@laptop.mattrude.com/', 'laptop.mattrude.com', 'matt' );
+		VALUES ( '$MASTER@$MYHOST', 'password', '$MASTER', '$MYHOST/$MASTER@$MYHOST/', '$MYHOST', '$MASTER' );
 
 	INSERT INTO alias ( address, goto, domain )
-		VALUES ( 'matt@laptop.mattrude.com', 'matt@laptop.mattrude.com', 'laptop.mattrude.com' );
+		VALUES ( '$MASTER@$MYHOST', '$MASTER@$MYHOST', '$MYHOST' );
 EOF
     chmod 600 /etc/vmail.sqlite
 fi
