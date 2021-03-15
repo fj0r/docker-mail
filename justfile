@@ -1,6 +1,6 @@
 test:
     docker run --name mail --rm \
-        -e DOMAIN=localhost \
+        -e HOST=mail.iffy.me \
         -e EXTERNAL_IP=127.0.0.1 \
         -e MASTER=root \
         -v $PWD/mail:/var/spool/mail \

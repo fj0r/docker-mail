@@ -6,12 +6,14 @@ MASTER=${MASTER:-master}
 EXTERNAL_IP=${EXTERNAL_IP:-127.0.0.1}
 MYDOMAIN=$(echo $MYHOST|cut -d'.' -f 2-)
 echo "${EXTERNAL_IP} ${MYHOST}" >> /etc/hosts
-echo "${MYDOMAIN}" >> /etc/mailname
+#echo "${MYDOMAIN}" >> /etc/mailname
+echo "${MYHOST}" >> /etc/mailname
 
-sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${DOMAIN}"'/' /etc/postfix/aliases
 sed -i 's/MAIL\.DOMAIN\.TLD/'"${MYHOST}"'/' /etc/postfix/main.cf
 
+sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${MYHOST}"'/' /etc/postfix/aliases
 postalias /etc/postfix/aliases
+
 
 if [ ! -f /etc/vmail.sqlite ]; then
     sqlite3 -batch /etc/vmail.sqlite << EOF
@@ -55,7 +57,7 @@ if [ ! -f /etc/vmail.sqlite ]; then
 		VALUES ( '$MASTER@$MYHOST', 'password', '$MASTER', '$MYHOST/$MASTER@$MYHOST/', '$MYHOST', '$MASTER' );
 
 	INSERT INTO alias ( address, goto, domain )
-		VALUES ( '$MASTER@$MYHOST', '$MASTER@$MYHOST', '$MYHOST' );
+		VALUES ( 'master@$MYHOST', '$MASTER@$MYHOST', '$MYHOST' );
 EOF
     chmod 600 /etc/vmail.sqlite
 fi
