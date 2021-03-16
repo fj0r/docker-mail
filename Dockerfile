@@ -72,6 +72,7 @@ RUN set -eux \
 
 COPY etc/postfix /etc/postfix
 COPY etc/dovecot /etc/dovecot
+COPY etc/opendkim.conf /etc/opendkim.conf
 
 RUN set -eux \
   ; groupadd --system vmail -g 5000 \

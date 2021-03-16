@@ -109,3 +109,9 @@ smtpd_tls_received_header = yes
 # Dovecot
 virtual_transport = dovecot
 dovecot_destination_recipient_limit = 1
+
+#opendkim
+smtpd_milters = local:/run/opendkim/opendkim.sock
+non_smtpd_milters = local:/run/opendkim/opendkim.sock
+milter_default_action = accept
+

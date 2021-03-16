@@ -14,9 +14,23 @@ sed -i 's/MAIL\.DOMAIN\.TLD/'"${MYHOST}"'/' /etc/postfix/main.cf
 sed -i 's/USER@DOMAIN\.TLD/'"${MASTER}@${MYHOST}"'/' /etc/postfix/aliases
 postalias /etc/postfix/aliases
 
+### DKIM
+sed -i 's/MAIL\.DOMAIN\.TLD/'"${MYHOST}"'/' /etc/opendkim.conf
+if [ ! -d /etc/opendkim/keys/$MYHOST ]; then
+    echo "--- generate opendkim keys"
+    curr=$PWD
+    mkdir -p /etc/opendkim/keys/$MYHOST
+    cd /etc/opendkim/keys/$MYHOST
+    opendkim-genkey -d $MYHOST -s default
+    chown -R opendkim:opendkim /etc/opendkim/keys/$MYHOST
+    echo "default._domainkey.$MYHOST $MYHOST:default:/etc/opendkim/keys/$MYHOST/default.private" >> /etc/opendkim/KeyTable
+    echo "*@$MYHOST default._domainkey.$MYHOST" >> /etc/opendkim/SigningTable
+    cd $curr
+fi
+cat /etc/opendkim/keys/$MYHOST/default.txt
 
-if [ ! -f /etc/vmail.sqlite ]; then
-    sqlite3 -batch /etc/vmail.sqlite << EOF
+if [ ! -f /etc/vmail/vmail.sqlite ]; then
+    sqlite3 -batch /etc/vmail/vmail.sqlite << EOF
     CREATE TABLE alias (
         address varchar(255) NOT NULL,
         goto text NOT NULL,
@@ -59,7 +73,7 @@ if [ ! -f /etc/vmail.sqlite ]; then
 	INSERT INTO alias ( address, goto, domain )
 		VALUES ( 'master@$MYHOST', '$MASTER@$MYHOST', '$MYHOST' );
 EOF
-    chmod 600 /etc/vmail.sqlite
+    chmod 600 /etc/vmail/vmail.sqlite
 fi
 
 service postfix start

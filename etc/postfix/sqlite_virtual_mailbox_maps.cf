@@ -1,2 +1,2 @@
-dbpath = /etc/vmail.sqlite
+dbpath = /etc/vmail/vmail.sqlite
 query = SELECT maildir FROM mailbox WHERE username='%s' AND active = '1'

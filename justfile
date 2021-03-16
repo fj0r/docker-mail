@@ -3,9 +3,10 @@ test:
         -e HOST=mail.iffy.me \
         -e EXTERNAL_IP=127.0.0.1 \
         -e MASTER=root \
-        -v $PWD/mail:/var/spool/mail \
+        -v $PWD/data/mail:/var/spool/mail \
         -v $PWD/entrypoint.sh:/entrypoint.sh \
-        -v $PWD/vmail.sqlite:/etc/vmail.sqlite \
+        -v $PWD/data/vmail:/etc/vmail \
+        -v $PWD/data/opendkim:/etc/opendkim \
         --network=host \
         nnurphy/mail
 

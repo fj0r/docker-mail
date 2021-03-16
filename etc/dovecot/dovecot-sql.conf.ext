@@ -1,5 +1,5 @@
 driver = sqlite
-connect = /etc/vmail.sqlite
+connect = /etc/vmail/vmail.sqlite
 default_pass_scheme = SSHA512
 password_query = SELECT password FROM mailbox WHERE username = '%u'
 user_query = SELECT '/var/spool/mail/virtual/%d/%n' AS home, \
