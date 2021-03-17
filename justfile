@@ -10,6 +10,17 @@ test:
         --network=host \
         nnurphy/mail
 
+start:
+    docker run --name mail -d --restart=always \
+        -e HOST=lizzie.fun \
+        -e EXTERNAL_IP=67.218.158.11 \
+        -e MASTER=root \
+        -v $PWD/data/mail:/var/spool/mail \
+        -v $PWD/data/vmail:/etc/vmail \
+        -v $PWD/data/opendkim:/etc/opendkim \
+        --network=host \
+        nnurphy/mail
+
 build:
     docker build . -t nnurphy/mail:pg -f Dockerfile-pg
 
