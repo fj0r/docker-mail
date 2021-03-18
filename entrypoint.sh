@@ -68,7 +68,7 @@ if [ ! -f /etc/vmail/vmail.sqlite ]; then
 		VALUES ( '$MYHOST', '$MYHOST domain', 'virtual' );
 
 	INSERT INTO mailbox ( username, password, name, maildir, domain, local_part )
-		VALUES ( '$MASTER@$MYHOST', 'password', '$MASTER', '$MYHOST/$MASTER@$MYHOST/', '$MYHOST', '$MASTER' );
+		VALUES ( '$MASTER@$MYHOST', '$(echo ${PASSWORD:-test} | openssl passwd -1 -stdin)', '$MASTER', '$MYHOST/$MASTER@$MYHOST/', '$MYHOST', '$MASTER' );
 
 	INSERT INTO alias ( address, goto, domain )
 		VALUES ( 'master@$MYHOST', '$MASTER@$MYHOST', '$MYHOST' );
