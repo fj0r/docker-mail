@@ -83,7 +83,6 @@ smtpd_sasl_auth_enable = yes
 broken_sasl_auth_clients = no
 smtpd_sasl_security_options = noanonymous
 smtpd_sasl_local_domain = $myhostname
-smtpd_sasl_authenticated_header = no
 
 # TLS parameters
 smtpd_tls_cert_file = /PATH/TO/SSL_CERTIFICATE
@@ -108,7 +107,7 @@ smtpd_tls_loglevel = 0
 smtpd_tls_received_header = yes
 
 # Dovecot
-virtual_transport = dovecot
+virtual_transport = lmtp:unix:private/dovecot-lmtp
 dovecot_destination_recipient_limit = 1
 
 #opendkim
