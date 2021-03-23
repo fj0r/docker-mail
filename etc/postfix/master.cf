@@ -15,12 +15,12 @@ smtp      inet  n       -       y       -       -       smtpd
 #dnsblog   unix  -       -       y       -       0       dnsblog
 #tlsproxy  unix  -       -       y       -       0       tlsproxy
 #submission inet n       -       y       -       -       smtpd
-#  -o syslog_name=postfix/submission
+  -o syslog_name=postfix/submission
 #  -o smtpd_tls_security_level=encrypt
-#  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_sasl_auth_enable=yes
 #  -o smtpd_tls_auth_only=yes
 #  -o smtpd_reject_unlisted_recipient=no
-#  -o smtpd_client_restrictions=$mua_client_restrictions
+  -o smtpd_client_restrictions=permit_sasl_authenticated,reject
 #  -o smtpd_helo_restrictions=$mua_helo_restrictions
 #  -o smtpd_sender_restrictions=$mua_sender_restrictions
 #  -o smtpd_recipient_restrictions=
@@ -125,15 +125,6 @@ mailman   unix  -       n       n       -       -       pipe
   flags=FR user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py
   ${nexthop} ${user}
 
-
-submission inet n - y - - smtpd
- -o syslog_name=postfix/submission
- -o smtpd_tls_security_level=encrypt
- -o smtpd_sasl_auth_enable=yes
- -o smtpd_tls_auth_only=yes
- -o smtpd_client_restrictions=permit_sasl_authenticated,reject
- -o smtpd_sasl_security_options=noanonymous,noplaintext
- -o smtpd_sasl_tls_security_options=noanonymous
 
 dovecot unix - n n - - pipe
  flags=DRhu user=vmail:vmail argv=/usr/lib/dovecot/deliver -d $(recipient)
