@@ -1,4 +1,4 @@
-FROM nnurphy/mail:latest
+FROM fj0rd/mail:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
